@@ -41,4 +41,4 @@ jobs:
             release/*.blockmap
             release/latest.yml
           draft: false
-          generate_release_notes: true
+          generate_release_notes: false

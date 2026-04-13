@@ -955,6 +955,7 @@ export function EditorView({
   const lastPasteHandledAt = useRef<number>(0);
   const printRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+  const subtitleRef = useRef<HTMLTextAreaElement>(null);
   const undoPastRef = useRef<SOP[]>([]);
   const undoFutureRef = useRef<SOP[]>([]);
   const [isRecording, setIsRecording] = useState(false);
@@ -980,6 +981,13 @@ export function EditorView({
     el.style.height = "auto";
     el.style.height = `${Math.max(40, el.scrollHeight)}px`;
   }, [sop.title]);
+
+  useEffect(() => {
+    const el = subtitleRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.max(32, el.scrollHeight)}px`;
+  }, [sop.subtitle]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.config?.get) {
@@ -1938,7 +1946,8 @@ export function EditorView({
               autoFocus={initialPath == null}
               className="min-h-[2.5rem] resize-none overflow-hidden text-xl font-semibold border-0 bg-transparent shadow-none focus-visible:ring-0 min-w-0 flex-1 py-2"
             />
-            <Input
+            <Textarea
+              ref={subtitleRef}
               value={sop.subtitle ?? ""}
               onChange={(e) =>
                 updateSOP((d) => {
@@ -1946,7 +1955,8 @@ export function EditorView({
                 })
               }
               placeholder="Add a subtitle..."
-              className="text-base font-normal text-muted-foreground border-0 bg-transparent shadow-none focus-visible:ring-0 h-8 py-1"
+              rows={1}
+              className="min-h-[2rem] resize-none overflow-hidden text-base font-normal text-muted-foreground border-0 bg-transparent shadow-none focus-visible:ring-0 py-1"
             />
           </div>
         </div>

@@ -61,7 +61,11 @@ function createWindow(): void {
     height: 750,
     show: false,
     frame: false,
-    icon: nativeImage.createFromPath(join(__dirname, '../../resources/icon.ico')),
+    icon: nativeImage.createFromPath(
+      is.dev
+        ? join(__dirname, '../../resources/icon.ico')
+        : join(process.resourcesPath, 'resources/icon.ico')
+    ),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

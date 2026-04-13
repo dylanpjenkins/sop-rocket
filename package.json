@@ -81,8 +81,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "resources/icon.ico",
-      "signAndEditExecutable": false
+      "icon": "resources/icon.ico"
     },
     "nsis": {
       "oneClick": false,
