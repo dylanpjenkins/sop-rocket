@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -40,5 +40,5 @@ jobs:
             release/*.exe
             release/*.blockmap
             release/latest.yml
-          draft: true
+          draft: false
           generate_release_notes: true
