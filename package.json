@@ -89,7 +89,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "SOP Rocket"
+      "shortcutName": "SOP Rocket",
+      "artifactName": "${productName} Setup.${ext}"
     }
   }
 }
