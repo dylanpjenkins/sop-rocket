@@ -4,6 +4,13 @@
  * Keeps a per-display stream cache so grabFrame() is fast (no getUserMedia on each click).
  */
 
+// ImageCapture.grabFrame() is supported in Chromium but missing from TS's DOM lib
+declare global {
+  interface ImageCapture {
+    grabFrame(): Promise<ImageBitmap>
+  }
+}
+
 const CROP_WIDTH = 640
 const CROP_HEIGHT = 336
 const MAX_STREAM_CACHE = 4
@@ -161,7 +168,9 @@ export async function captureRegionAroundClick(payload: CapturePayload): Promise
     : sources[0]
   if (!source) return null
 
-  const ImageCaptureCtor = typeof ImageCapture !== 'undefined' && (window as unknown as { ImageCapture: typeof ImageCapture }).ImageCapture
+  const ImageCaptureCtor = typeof ImageCapture !== 'undefined'
+    ? (window as unknown as { ImageCapture: typeof ImageCapture }).ImageCapture
+    : null
   if (!ImageCaptureCtor?.prototype?.grabFrame) {
     window.capture.sendCaptureFailed?.('ImageCapture.grabFrame not available')
     return null

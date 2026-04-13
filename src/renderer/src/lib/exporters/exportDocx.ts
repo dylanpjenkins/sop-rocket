@@ -12,7 +12,6 @@ import {
   ShadingType,
   WidthType,
   VerticalAlign,
-  type ISectionOptions,
   type IBorderOptions,
 } from "docx";
 import type { SOP } from "@shared/types";
@@ -93,7 +92,7 @@ const MAX_IMG_WIDTH = 480;
 
 export async function exportDocx(sop: SOP): Promise<ArrayBuffer> {
   const nodes = getInstructionNodes(sop);
-  const children: ISectionOptions["children"] = [];
+  const children: (Paragraph | Table)[] = [];
 
   // Title
   children.push(
