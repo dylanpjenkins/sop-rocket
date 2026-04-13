@@ -83,6 +83,13 @@
       ],
       "icon": "resources/icon.ico",
       "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SOP Rocket"
     }
   }
 }
