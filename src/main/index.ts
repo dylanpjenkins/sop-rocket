@@ -88,6 +88,23 @@ function createWindow(): void {
   }
 }
 
+// Handle Squirrel/NSIS install events — quit gracefully when the installer needs to replace files
+if (app.requestSingleInstanceLock()) {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+} else {
+  app.quit()
+}
+
+// Quit when invoked with NSIS installer flags (install/update/uninstall)
+if (process.argv.some(arg => /^--squirrel-|^--updated$/.test(arg))) {
+  app.quit()
+}
+
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.sop-rocket.app')
   app.on('browser-window-created', (_, window) => {
