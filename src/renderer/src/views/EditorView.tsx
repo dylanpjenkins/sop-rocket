@@ -263,7 +263,7 @@ function StepImagesRow({
       {imageUrls.map((url, i) => (
         <div
           key={i}
-          draggable={canReorder}
+          draggable={!!canReorder}
           onDragStart={(e) => handleDragStart(e, i)}
           onDragOver={(e) => handleDragOver(e, i)}
           onDragLeave={handleDragLeave}
@@ -1000,8 +1000,8 @@ export function EditorView({
     }
   }, []);
 
-  const saveRef = useRef<() => void | Promise<void>>(null);
-  const exportRef = useRef<() => void | Promise<void>>(null);
+  const saveRef = useRef<(() => void | Promise<void>) | null>(null);
+  const exportRef = useRef<(() => void | Promise<void>) | null>(null);
 
   const pushUndoPast = useCallback((snapshot: SOP) => {
     undoPastRef.current = [
@@ -1107,7 +1107,7 @@ export function EditorView({
 
   const updateNode = (
     nodeIndex: number,
-    patch: Partial<Step> | Partial<TipNode>,
+    patch: Partial<StepNode> | Partial<TipNode>,
   ) => {
     updateSOP((d) => {
       const nodes = getInstructionNodes(d);
@@ -1580,7 +1580,7 @@ export function EditorView({
         const defaultName = `${sop.title.replace(/[/\\?%*:|"<>]/g, "-")}.pdf`;
         const filePath = await window.dialogApi.showSaveDialog(defaultName);
         if (filePath) {
-          await window.pdfApi.write(filePath, arrayBuffer);
+          await window.pdfApi.write(filePath, arrayBuffer as ArrayBuffer);
         }
       } catch (e) {
         console.error(e);

@@ -118,7 +118,7 @@ export function importHTML(html: string, fileName?: string): SOP {
         .filter(Boolean);
       const step = createStep(stepTitle, descHtml, images);
       steps.push(step);
-      nodes.push({ type: "step", stepId: step.id } as StepNode);
+      nodes.push({ ...step, type: "step" as const });
     }
     // Look for .tip divs
     for (const div of Array.from(doc.querySelectorAll(".tip"))) {
@@ -137,11 +137,11 @@ export function importHTML(html: string, fileName?: string): SOP {
     let currentDescParts: string[] = [];
     let currentImages: string[] = [];
 
-    function flush() {
+    const flush = () => {
       if (currentTitle !== null) {
         const step = createStep(currentTitle, currentDescParts.join(""), currentImages);
         steps.push(step);
-        nodes.push({ type: "step", stepId: step.id } as StepNode);
+        nodes.push({ ...step, type: "step" as const });
       }
       currentTitle = null;
       currentDescParts = [];

@@ -41,7 +41,7 @@ const ROOT_DROP_ID = '__root__'
 
 /** Offset the drag overlay to the right so the drop guideline remains visible under the cursor. */
 const DRAG_OVERLAY_OFFSET_X = 100
-function offsetDragOverlayToRight({ transform }: { transform: { x: number; y: number } }) {
+function offsetDragOverlayToRight({ transform }: { transform: { x: number; y: number; scaleX: number; scaleY: number } }) {
   return { ...transform, x: transform.x + DRAG_OVERLAY_OFFSET_X }
 }
 
@@ -297,7 +297,7 @@ export function LibrarySidebar({
       let cached = sopCacheRef.current.get(file.path)
       if (!cached) {
         try {
-          const sop = await window.storage.loadSOP(file.path)
+          const sop = (await window.storage.loadSOP(file.path)) as SOP | null
           if (sop) {
             const stepTitles = (sop.nodes ?? sop.steps.map(s => ({ ...s, type: 'step' as const })))
               .filter((n: any) => n.type === 'step')
@@ -688,7 +688,7 @@ export function LibrarySidebar({
   }
 
   const sensors = useSensors(
-    useSensor(LeftClickPointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(LeftClickPointerSensor as unknown as typeof PointerSensor, { activationConstraint: { distance: 5 } })
   )
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -804,7 +804,7 @@ export function LibrarySidebar({
                     type="button"
                     className={`flex items-center gap-2 w-full px-3 py-1.5 text-left text-sm hover:bg-accent/50 ${currentPath === file.path ? 'bg-accent' : ''}`}
                     onClick={async () => {
-                      const sop = await window.storage.loadSOP(file.path)
+                      const sop = (await window.storage.loadSOP(file.path)) as SOP | null
                       if (sop) onOpenSOP(sop, file.path)
                     }}
                   >
@@ -1169,7 +1169,7 @@ function TreeRoot({
         <div className="flex items-center gap-1.5 min-h-7 rounded px-1 py-0.5 bg-primary/15" style={{ paddingLeft: 26 }}>
           <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
           <Input
-            ref={newSOPInputRef}
+            ref={newSOPInputRef as React.Ref<HTMLInputElement>}
             value={newSOPName}
             onChange={(e) => onNewSOPNameChange(e.target.value)}
             onKeyDown={(e) => {
@@ -1203,7 +1203,6 @@ function TreeRoot({
             renamingPath={renamingPath}
             renameValue={renameValue}
       onToggleExpand={onToggleExpand}
-      onSelectRow={(e) => onSelect(item.path, 'folder', item.name, e)}
       onSelectFolder={onSelectFolder}
       onOpenFile={onOpenFile}
       onRenameFolder={onRenameFolder}
@@ -1655,7 +1654,7 @@ function FolderRow({
             <div className="flex items-center gap-1.5 min-h-7 rounded px-1 py-0.5 bg-primary/15" style={{ paddingLeft: (depth + 1) * 12 + 26 }}>
               <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
               <Input
-                ref={newSOPInputRef}
+                ref={newSOPInputRef as React.Ref<HTMLInputElement>}
                 value={newSOPName}
                 onChange={(e) => onNewSOPNameChange(e.target.value)}
                 onKeyDown={(e) => {

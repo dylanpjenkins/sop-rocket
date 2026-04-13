@@ -91,7 +91,7 @@ export function importMarkdown(text: string, fileName?: string): SOP {
     if (currentStepTitle !== null) {
       const step = createStep(currentStepTitle, currentDescLines);
       steps.push(step);
-      nodes.push({ type: "step", stepId: step.id } as StepNode);
+      nodes.push({ ...step, type: "step" as const });
     }
     currentStepTitle = null;
     currentDescLines = [];
