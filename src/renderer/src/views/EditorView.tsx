@@ -16,10 +16,15 @@ import {
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { CSS, type Transform } from "@dnd-kit/utilities";
+
+/** Strip scaleX/scaleY from the dnd-kit transform so dragged items keep their original size. */
+function translateOnly(transform: Transform | null): string | undefined {
+  if (!transform) return undefined;
+  return CSS.Transform.toString({ ...transform, scaleX: 1, scaleY: 1 });
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Plus, Trash2, GripVertical, Circle, Square, ChevronDown, Download, IndentIncrease, IndentDecrease } from "lucide-react";
 import { StepImageWithAnnotations } from "@/components/StepImageWithAnnotations";
@@ -366,7 +371,7 @@ function SortableStepCard({
     id: step.id,
   });
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: translateOnly(transform),
     transition,
   };
   const hasImages = imageRows.length > 0 && imageRows.some((r) => r.length > 0);
@@ -767,7 +772,7 @@ function SortableTipCard({ node, onUpdate, onRemove }: SortableTipCardProps) {
     id: node.id,
   });
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: translateOnly(transform),
     transition,
   };
   const variantClasses = TIP_VARIANT_CLASSES[node.variant];
@@ -1991,9 +1996,12 @@ export function EditorView({
               variant="outline"
               onClick={() => setExportMenuOpen((v) => !v)}
               disabled={exporting}
-              className="min-w-[7.5rem] gap-1.5">
+              className="gap-1.5">
               <Download className="h-4 w-4" />
-              {exporting ? "Exporting..." : "Export"}
+              <span className="inline-grid [&>*]:col-start-1 [&>*]:row-start-1">
+                <span className={exporting ? "invisible" : ""}>Export</span>
+                <span className={exporting ? "" : "invisible"}>Exporting...</span>
+              </span>
               <ChevronDown className="h-3 w-3 opacity-60" />
             </Button>
             {exportMenuOpen && !exporting && (
